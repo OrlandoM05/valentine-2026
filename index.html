@@ -7,15 +7,17 @@
   <style>
     :root{
       --theme:#ff4d6d; --theme-dark:#e63956;
-      --sky1:#ffd3e0; --sky2:#ffe9f1; --ground:#fff4f7;
+      --skyTop:#bfe7ff;  /* azul arriba */
+      --skyBottom:#eaf7ff; /* azul casi blanco abajo */
+      --ground:#fff4f7;
       --text:#2a2a2a;
     }
     *{box-sizing:border-box;margin:0}
     body{
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      background: radial-gradient(circle at 20% 20%, #ffe0ea 0 28%, transparent 29%),
-                  radial-gradient(circle at 80% 30%, #ffd1e0 0 24%, transparent 25%),
-                  var(--sky2);
+      background: radial-gradient(circle at 12% 18%, #e6f5ff 0 22%, transparent 23%),
+                  radial-gradient(circle at 88% 28%, #ffe4ef 0 18%, transparent 19%),
+                  var(--skyBottom);
       color:var(--text);
       min-height:100svh; overflow-x:hidden;
       display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
@@ -26,50 +28,41 @@
     /* Frase */
     .quote{
       text-align:center; font-weight:600; line-height:1.35;
-      font-size:clamp(18px,3.2vw,24px); color:#6a3651;
-      background:#fff0f5; border:1px solid #ffd6e0; border-radius:16px;
-      padding:12px 14px; box-shadow:0 8px 22px rgba(255,77,109,.16);
-      margin-bottom:14px;
+      font-size:clamp(18px,3.2vw,24px); color:#345;
+      background:#ffffffbd; border:1px solid #e9eef7; border-radius:16px;
+      padding:12px 14px; box-shadow:0 8px 22px rgba(0,0,0,.06);
+      margin-bottom:14px; backdrop-filter: blur(2px);
     }
 
-    /* Escena (contenedor) */
+    /* Escena */
     .scene{
       position:relative; height:min(60vh,560px);
-      background: linear-gradient(180deg, var(--sky1) 0%, var(--sky2) 56%, var(--ground) 57%, #fff 100%);
-      border:2px solid #ffd6e0; border-radius:22px; overflow:hidden;
-      box-shadow:0 16px 44px rgba(255,77,109,.18);
+      background: linear-gradient(180deg, var(--skyTop) 0%, var(--skyBottom) 60%, var(--ground) 61%, #fff 100%);
+      border:2px solid #e6eef6; border-radius:22px; overflow:hidden;
+      box-shadow:0 16px 44px rgba(0,0,0,.08);
       isolation:isolate;
     }
-
-    /* Sol + montañas en un SVG de fondo */
     .bg-svg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
 
-    /* Alberca (lagunita) */
+    /* Alberca */
     .pool{
-      position:absolute; left:50%; bottom:10%;
+      position:absolute; left:50%; bottom:12%;
       transform:translateX(-50%);
-      width:min(560px,82%); height:min(120px,18vw);
+      width:min(580px,84%); height:min(120px,18vw);
       border-radius:50%;
-      background: radial-gradient(120% 100% at 50% 30%, #e7fbff 0%, #bfe9ff 28%, #9bd6ff 60%, #84c8ff 100%);
-      box-shadow: inset 0 10px 18px rgba(255,255,255,.8),
-                  inset 0 -8px 18px rgba(0,0,0,.05);
-      filter:saturate(1.02);
+      background: radial-gradient(120% 100% at 50% 30%, #e8fbff 0%, #c8efff 28%, #a6ddff 60%, #8ccfff 100%);
+      box-shadow: inset 0 10px 18px rgba(255,255,255,.85),
+                  inset 0 -8px 18px rgba(0,0,0,.06);
     }
-    .pool::before, .pool::after{
+    .pool::before,.pool::after{
       content:""; position:absolute; inset:0; border-radius:50%;
       border:2px solid rgba(255,255,255,.55);
-      opacity:.65;
-      animation:ripple 6s ease-in-out infinite;
+      opacity:.65; animation:ripple 6s ease-in-out infinite;
     }
-    .pool::after{
-      border-width:1px; inset:6%; opacity:.45; animation-duration:7.5s;
-    }
-    @keyframes ripple{
-      0%,100%{ transform:scale(1); opacity:.65 }
-      50%{ transform:scale(1.02); opacity:.35 }
-    }
+    .pool::after{ border-width:1px; inset:6%; opacity:.45; animation-duration:7.5s; }
+    @keyframes ripple{ 0%,100%{ transform:scale(1); opacity:.65 } 50%{ transform:scale(1.02); opacity:.35 } }
 
-    /* Globo del pingüino gris */
+    /* Globo */
     .bubble{
       position:absolute; left:18%; bottom:64%; max-width:min(72%, 520px);
       background:#fff; border:2px solid #ffd1dc; color:#6a3651; font-weight:700;
@@ -82,28 +75,24 @@
       filter:drop-shadow(0 2px 0 #ffd1dc);
     }
 
-    /* Botón aceptar */
+    /* CTA */
     .cta{
       position:absolute; left:50%; bottom:8%; transform:translateX(-50%);
       padding:12px 24px; border-radius:999px; background:var(--theme); color:#fff; border:none; cursor:pointer;
       font-weight:800; letter-spacing:.2px; box-shadow:0 10px 26px rgba(255,77,109,.32);
       z-index:2;
     }
-    .cta:hover{ filter:brightness(1.02) saturate(1.02) }
 
-    /* --- Estados y animaciones --- */
-
-    /* truco: animamos SOLO el grupo interno (inner) para no perder la traducción base */
+    /* Animaciones y estados */
     svg g.inner{ transform-box: fill-box; transform-origin: 50% 75%; }
-
     body.accepted .cta{ display:none; }
     body.accepted .bubble{ animation:fadeOut .6s ease forwards .2s; }
 
-    /* baile suave, sin saltos ni cambios de tamaño bruscos */
+    /* Aplica baile a los grupos internos correctamente */
     body.accepted #pengL .inner{ animation: danceL 1400ms cubic-bezier(.17,.67,.32,1) infinite; }
     body.accepted #pengR .inner{ animation: danceR 1400ms cubic-bezier(.17,.67,.32,1) infinite; }
 
-    /* bocas felices */
+    /* Sonrisa al aceptar */
     .mouth-happy{ opacity:0; }
     body.accepted .mouth-neutral{ opacity:0; }
     body.accepted .mouth-happy{ opacity:1; }
@@ -119,18 +108,17 @@
     @keyframes fadeOut{ to{ opacity:0; transform: translateY(-6px) scale(.98); visibility:hidden; } }
 
     /* Mensaje final */
-    .final{ margin-top:14px; display:none; text-align:center; font-weight:700; color:#6a3651; background:#fff4f7; border:1px solid #ffd6e0; border-radius:14px; padding:12px 14px; box-shadow:0 8px 20px rgba(255,77,109,.18); }
+    .final{ margin-top:14px; display:none; text-align:center; font-weight:700; color:#345; background:#ffffffbd; border:1px solid #e9eef7; border-radius:14px; padding:12px 14px; box-shadow:0 8px 20px rgba(0,0,0,.06); backdrop-filter: blur(2px); }
     body.show-final .final{ display:block; animation:pop .45s ease both; }
     @keyframes pop{ 0%{ opacity:0; transform: scale(.96) translateY(6px); } 100%{ opacity:1; transform: scale(1) translateY(0); } }
 
-    /* Confeti corazones */
+    /* Confeti */
     .confetti{ position:fixed; inset:0; pointer-events:none; z-index:20; }
     .heart{ position:absolute; font-size:18px; animation: floatUp linear forwards; filter: drop-shadow(0 2px 2px rgba(0,0,0,.15)); }
     @keyframes floatUp{ from{ transform: translateY(10px) scale(1); opacity:1; } to{ transform: translateY(-120vh) scale(.85); opacity:0; } }
 
     .footer{ margin:16px auto 0; text-align:center; font-size:12px; color:#8a8a8a; }
 
-    /* Responsive: ajusta globo en pantallas pequeñas */
     @media (max-width:560px){
       .bubble{ left:10%; bottom:66%; }
     }
@@ -141,68 +129,63 @@
     <div class="quote" id="quoteText">“Contigo, cada latido encuentra su abrazo.”</div>
 
     <div class="scene" aria-label="Paisaje romántico con pingüinitos">
-      <!-- Fondo con sol y montañitas -->
+      <!-- Sol, montañas gris/rosa y cielo azul -->
       <svg class="bg-svg" viewBox="0 0 1000 560" role="img" aria-hidden="true">
-        <!-- cielo ya está en el fondo del div -->
-        <!-- sol -->
         <defs>
-          <radialGradient id="sunG" cx="75%" cy="20%" r="30%">
-            <stop offset="0%" stop-color="#ffd9a8"/>
-            <stop offset="40%" stop-color="#ffc078"/>
-            <stop offset="70%" stop-color="rgba(255,192,120,0)"/>
+          <radialGradient id="sunG" cx="75%" cy="18%" r="28%">
+            <stop offset="0%"  stop-color="#ffe6a8"/>
+            <stop offset="40%" stop-color="#ffc978"/>
+            <stop offset="80%" stop-color="rgba(255,201,120,0)"/>
           </radialGradient>
-          <linearGradient id="mountPink" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stop-color="#ffc0cc"/>
-            <stop offset="100%" stop-color="#ffb0c0"/>
+          <!-- Montaña gris (izq) -->
+          <linearGradient id="mountGray" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%"   stop-color="#d6dbe2"/>
+            <stop offset="100%" stop-color="#b7c3ce"/>
           </linearGradient>
-          <linearGradient id="mountBack" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stop-color="#ffd0d8"/>
-            <stop offset="100%" stop-color="#ffc7d2"/>
+          <!-- Montaña rosa (der) muy suave -->
+          <linearGradient id="mountPink" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%"   stop-color="#ffd6e3"/>
+            <stop offset="100%" stop-color="#ffc2d2"/>
           </linearGradient>
         </defs>
-        <circle cx="760" cy="110" r="220" fill="url(#sunG)" opacity=".9"/>
-        <!-- montañas traseras -->
-        <path d="M-20 360 C120 260, 200 260, 360 360 S 600 460, 760 360 S 920 260, 1120 360 L1120 560 L-20 560 Z" fill="url(#mountBack)" opacity=".7"/>
-        <!-- montañas delanteras -->
-        <path d="M-40 390 C80 300, 220 300, 360 390 S 540 480, 720 390 S 900 300, 1120 390 L1120 560 L-40 560 Z" fill="url(#mountPink)" opacity=".9"/>
+        <circle cx="770" cy="110" r="180" fill="url(#sunG)" opacity=".9"/>
+        <!-- Montaña del fondo (gris) -->
+        <path d="M-20 380 C120 300, 240 300, 380 380 S 600 460, 760 380 S 900 300, 1120 380 L1120 560 L-20 560 Z"
+              fill="url(#mountGray)" opacity=".85"/>
+        <!-- Montaña del frente (rosa suave) -->
+        <path d="M-40 410 C80 330, 240 330, 400 410 S 600 490, 780 410 S 940 330, 1120 410 L1120 560 L-40 560 Z"
+              fill="url(#mountPink)" opacity=".95"/>
       </svg>
 
       <!-- Alberca -->
       <div class="pool" aria-hidden="true"></div>
 
-      <!-- Pingüinos SVG (con wrappers para evitar brincos) -->
+      <!-- Pingüinos con wrappers fijos y grupo interno animable -->
       <svg class="bg-svg" viewBox="0 0 1000 560" role="img" aria-label="Pingüino gris invitando a pingüina rosa">
-        <!-- Pingüino gris (izquierda) -->
-        <g id="pengLwrap" transform="translate(300,160)">
-          <g id="pengL" class="inner">
-            <!-- sombra sobre alberca -->
+        <!-- Izquierda (gris) -->
+        <g id="pengL" transform="translate(300,160)">
+          <g class="inner">
             <ellipse cx="0" cy="212" rx="56" ry="14" fill="#000" opacity=".06"/>
-            <!-- cuerpo -->
             <ellipse cx="0" cy="120" rx="82" ry="106" fill="#bbb"/>
             <ellipse cx="0" cy="145" rx="64" ry="80" fill="#fff"/>
-            <!-- alas -->
             <ellipse cx="-78" cy="142" rx="22" ry="50" fill="#b0b0b0" transform="rotate(-16 -78 142)"/>
             <ellipse cx="78"  cy="142" rx="22" ry="50" fill="#b0b0b0" transform="rotate(16 78 142)"/>
-            <!-- pies -->
             <ellipse cx="-30" cy="212" rx="28" ry="12" fill="#f6b24e"/>
             <ellipse cx="30"  cy="212" rx="28" ry="12" fill="#f6b24e"/>
-            <!-- cara -->
             <circle cx="-24" cy="100" r="6" fill="#222"/>
             <circle cx="24"  cy="100" r="6" fill="#222"/>
             <ellipse cx="-24" cy="114" rx="8" ry="4" fill="#f7b7c6" opacity=".6"/>
             <ellipse cx="24"  cy="114" rx="8" ry="4" fill="#f7b7c6" opacity=".6"/>
-            <!-- pico -->
             <path d="M-9 108 Q0 120 9 108 Q0 112 -9 108 Z" fill="#f6b24e" />
-            <!-- bocas -->
             <path class="mouth-neutral" d="M-12 126 Q0 128 12 126" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/>
             <path class="mouth-happy"   d="M-14 126 Q0 140 14 126" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/>
-            <!-- moñito -->
+            <!-- moño -->
             <g transform="translate(0,166)">
               <path d="M-28 0 L-4 10 L-4 -10 Z" fill="#222"/>
               <path d="M28 0 L4 10 L4 -10 Z" fill="#222"/>
               <circle cx="0" cy="0" r="6" fill="#222"/>
             </g>
-            <!-- sombrerito -->
+            <!-- sombrero -->
             <g transform="translate(0,10)">
               <ellipse cx="0" cy="10" rx="28" ry="10" fill="#222"/>
               <rect x="-24" y="-2" width="48" height="16" rx="3" fill="#222"/>
@@ -210,33 +193,24 @@
           </g>
         </g>
 
-        <!-- Pingüina rosa (derecha) -->
-        <g id="pengRwrap" transform="translate(700,160)">
-          <g id="pengR" class="inner">
-            <!-- sombra -->
+        <!-- Derecha (rosa) -->
+        <g id="pengR" transform="translate(700,160)">
+          <g class="inner">
             <ellipse cx="0" cy="212" rx="56" ry="14" fill="#000" opacity=".06"/>
-            <!-- velo -->
             <path d="M-62 34 C-34 -10, 34 -10, 62 34 C44 32, -44 32, -62 34 Z" fill="#ffffff" opacity=".72"/>
-            <!-- cuerpo -->
             <ellipse cx="0" cy="120" rx="82" ry="106" fill="#f9b6c2"/>
             <ellipse cx="0" cy="145" rx="64" ry="80" fill="#fff"/>
-            <!-- alas -->
             <ellipse cx="-78" cy="142" rx="22" ry="50" fill="#f3a2b3" transform="rotate(-16 -78 142)"/>
             <ellipse cx="78"  cy="142" rx="22" ry="50" fill="#f3a2b3" transform="rotate(16 78 142)"/>
-            <!-- pies -->
             <ellipse cx="-30" cy="212" rx="28" ry="12" fill="#f6b24e"/>
             <ellipse cx="30"  cy="212" rx="28" ry="12" fill="#f6b24e"/>
-            <!-- cara -->
             <circle cx="-24" cy="100" r="6" fill="#222"/>
             <circle cx="24"  cy="100" r="6" fill="#222"/>
             <ellipse cx="-24" cy="114" rx="8" ry="4" fill="#f7b7c6" opacity=".6"/>
             <ellipse cx="24"  cy="114" rx="8" ry="4" fill="#f7b7c6" opacity=".6"/>
-            <!-- pico -->
             <path d="M-9 108 Q0 120 9 108 Q0 112 -9 108 Z" fill="#f6b24e" />
-            <!-- bocas -->
             <path class="mouth-neutral" d="M-12 126 Q0 128 12 126" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/>
             <path class="mouth-happy"   d="M-14 126 Q0 140 14 126" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/>
-            <!-- florecita -->
             <circle cx="0" cy="36" r="8" fill="#ff7fa1" opacity=".9"/>
             <circle cx="0" cy="36" r="3.5" fill="#fff"/>
           </g>
@@ -252,30 +226,25 @@
     <div class="footer">Hecho con 💗 por Orlis.</div>
   </div>
 
-  <!-- Confeti -->
   <div class="confetti" id="confetti" aria-hidden="true"></div>
 
   <script>
-    // Personaliza si quieres:
     const CONFIG = {
       quote: '“Contigo, cada latido encuentra su abrazo.”',
       inviteText: 'Orlis te invita a ser su Valentine date 💌',
       finalText: 'Te espero el 14 para un día de novios ✨',
       heartsCount: 90
     };
-    // Textos
     document.getElementById('quoteText').textContent = CONFIG.quote;
     document.getElementById('bubble').textContent   = CONFIG.inviteText;
     document.getElementById('finalMsg').textContent = CONFIG.finalText;
 
-    // Aceptar
     document.getElementById('acceptBtn').addEventListener('click', () => {
       document.body.classList.add('accepted');
-      setTimeout(()=> document.body.classList.add('show-final'), 300);
+      setTimeout(()=> document.body.classList.add('show-final'), 320);
       shootHearts(CONFIG.heartsCount);
     });
 
-    // Corazones 🎉
     function shootHearts(n=60){
       const confetti = document.getElementById('confetti');
       const emojis = ['💖','💘','💞','💗','💓','❤️','💕','💟'];
