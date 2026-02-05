@@ -6,17 +6,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root{
-      --theme:#ff4d6d; --theme-dark:#e63956;
-      --skyTop:#bfe7ff;  /* azul arriba */
-      --skyBottom:#eaf7ff; /* azul casi blanco abajo */
-      --ground:#fff4f7;
+      --theme:#ff4d6d;
+      --skyTop:#87c9ff;      /* azul cielo arriba */
+      --skyBottom:#eaf7ff;   /* azul muy claro abajo */
+      --grassTop:#aee3a1;    /* verde pasto superior */
+      --grassBottom:#8fd08d; /* verde pasto inferior */
       --text:#2a2a2a;
+      --mountBack:#77b37a;   /* montaña del fondo (verde) */
+      --mountFront:#5ba265;  /* montaña cercana (verde más intenso) */
+      --snow:#ffffff;
     }
+
     *{box-sizing:border-box;margin:0}
     body{
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
       background: radial-gradient(circle at 12% 18%, #e6f5ff 0 22%, transparent 23%),
-                  radial-gradient(circle at 88% 28%, #ffe4ef 0 18%, transparent 19%),
+                  radial-gradient(circle at 88% 28%, #e6f5ff 0 18%, transparent 19%),
                   var(--skyBottom);
       color:var(--text);
       min-height:100svh; overflow-x:hidden;
@@ -28,8 +33,8 @@
     /* Frase */
     .quote{
       text-align:center; font-weight:600; line-height:1.35;
-      font-size:clamp(18px,3.2vw,24px); color:#345;
-      background:#ffffffbd; border:1px solid #e9eef7; border-radius:16px;
+      font-size:clamp(18px,3.2vw,24px); color:#2e3f46;
+      background:#ffffffcc; border:1px solid #e3eef6; border-radius:16px;
       padding:12px 14px; box-shadow:0 8px 22px rgba(0,0,0,.06);
       margin-bottom:14px; backdrop-filter: blur(2px);
     }
@@ -37,22 +42,26 @@
     /* Escena */
     .scene{
       position:relative; height:min(60vh,560px);
-      background: linear-gradient(180deg, var(--skyTop) 0%, var(--skyBottom) 60%, var(--ground) 61%, #fff 100%);
+      background:
+        linear-gradient(180deg, var(--skyTop) 0%, var(--skyBottom) 58%,
+                                 var(--grassTop) 59%, var(--grassBottom) 100%);
       border:2px solid #e6eef6; border-radius:22px; overflow:hidden;
       box-shadow:0 16px 44px rgba(0,0,0,.08);
       isolation:isolate;
     }
     .bg-svg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
 
-    /* Alberca */
+    /* Alberca (agua) */
     .pool{
       position:absolute; left:50%; bottom:12%;
       transform:translateX(-50%);
       width:min(580px,84%); height:min(120px,18vw);
       border-radius:50%;
-      background: radial-gradient(120% 100% at 50% 30%, #e8fbff 0%, #c8efff 28%, #a6ddff 60%, #8ccfff 100%);
+      background: radial-gradient(120% 100% at 50% 30%,
+                                  #e8fbff 0%, #c8efff 28%, #a6ddff 60%, #8ccfff 100%);
       box-shadow: inset 0 10px 18px rgba(255,255,255,.85),
                   inset 0 -8px 18px rgba(0,0,0,.06);
+      z-index:2;
     }
     .pool::before,.pool::after{
       content:""; position:absolute; inset:0; border-radius:50%;
@@ -67,7 +76,7 @@
       position:absolute; left:18%; bottom:64%; max-width:min(72%, 520px);
       background:#fff; border:2px solid #ffd1dc; color:#6a3651; font-weight:700;
       padding:10px 14px; border-radius:16px; box-shadow:0 8px 20px rgba(255,77,109,.18);
-      z-index:2;
+      z-index:3;
     }
     .bubble::after{
       content:""; position:absolute; left:22px; bottom:-12px; width:0; height:0;
@@ -80,22 +89,34 @@
       position:absolute; left:50%; bottom:8%; transform:translateX(-50%);
       padding:12px 24px; border-radius:999px; background:var(--theme); color:#fff; border:none; cursor:pointer;
       font-weight:800; letter-spacing:.2px; box-shadow:0 10px 26px rgba(255,77,109,.32);
-      z-index:2;
+      z-index:3;
     }
 
-    /* Animaciones y estados */
-    svg g.inner{ transform-box: fill-box; transform-origin: 50% 75%; }
-    body.accepted .cta{ display:none; }
-    body.accepted .bubble{ animation:fadeOut .6s ease forwards .2s; }
+    /* ---------- Animaciones & estados ---------- */
 
-    /* Aplica baile a los grupos internos correctamente */
-    body.accepted #pengL .inner{ animation: danceL 1400ms cubic-bezier(.17,.67,.32,1) infinite; }
-    body.accepted #pengR .inner{ animation: danceR 1400ms cubic-bezier(.17,.67,.32,1) infinite; }
+    /* baile: solo cuando body tiene .dance */
+    svg g.inner{ transform-box: fill-box; transform-origin: 50% 75%; }
+    body.dance #pengL .inner{ animation: danceL 1400ms cubic-bezier(.17,.67,.32,1) infinite; }
+    body.dance #pengR .inner{ animation: danceR 1400ms cubic-bezier(.17,.67,.32,1) infinite; }
 
     /* Sonrisa al aceptar */
     .mouth-happy{ opacity:0; }
     body.accepted .mouth-neutral{ opacity:0; }
     body.accepted .mouth-happy{ opacity:1; }
+
+    /* vino y beso */
+    #wineL, #kissMark, #kissHeart { opacity:0; }
+    body.show-wine #wineL { animation: popIn .6s ease-out forwards; }
+    body.kiss #kissMark { animation: popIn .5s ease-out .1s forwards; }
+    body.kiss #kissHeart{ animation: heartFly 1.1s ease-out forwards; }
+
+    /* inclinación al besar */
+    body.kiss #pengR .inner{ animation: kissLeanR .9s ease-out forwards; }
+    body.kiss #pengL .inner{ animation: shyLeanL .9s ease-out forwards; }
+
+    /* oculta CTA y globo después de aceptar */
+    body.accepted .cta{ display:none; }
+    body.accepted .bubble{ animation:fadeOut .6s ease forwards .2s; }
 
     @keyframes danceL{
       0%,100%{ transform: translateY(0) rotate(-2deg) scale(1); }
@@ -105,10 +126,29 @@
       0%,100%{ transform: translateY(0) rotate(2deg)  scale(1); }
       50%    { transform: translateY(-8px) rotate(-3deg) scale(1.02); }
     }
+    @keyframes kissLeanR{
+      0%{ transform: translateY(0) rotate(0) }
+      60%{ transform: translate(-14px,-6px) rotate(-10deg) }
+      100%{ transform: translate(-10px,-4px) rotate(-6deg) }
+    }
+    @keyframes shyLeanL{
+      0%{ transform: translateY(0) rotate(0) }
+      60%{ transform: translate(6px,-4px) rotate(4deg) }
+      100%{ transform: translate(4px,-2px) rotate(2deg) }
+    }
+    @keyframes popIn{
+      0%{ opacity:0; transform: scale(.85) translateY(6px) }
+      100%{ opacity:1; transform: scale(1) translateY(0) }
+    }
+    @keyframes heartFly{
+      0%{ opacity:0; transform: translate(0,0) scale(.8) }
+      20%{ opacity:1 }
+      100%{ opacity:0; transform: translate(-90px,-40px) scale(1.2) }
+    }
     @keyframes fadeOut{ to{ opacity:0; transform: translateY(-6px) scale(.98); visibility:hidden; } }
 
     /* Mensaje final */
-    .final{ margin-top:14px; display:none; text-align:center; font-weight:700; color:#345; background:#ffffffbd; border:1px solid #e9eef7; border-radius:14px; padding:12px 14px; box-shadow:0 8px 20px rgba(0,0,0,.06); backdrop-filter: blur(2px); }
+    .final{ margin-top:14px; display:none; text-align:center; font-weight:700; color:#2e3f46; background:#ffffffcc; border:1px solid #e3eef6; border-radius:14px; padding:12px 14px; box-shadow:0 8px 20px rgba(0,0,0,.06); backdrop-filter: blur(2px); }
     body.show-final .final{ display:block; animation:pop .45s ease both; }
     @keyframes pop{ 0%{ opacity:0; transform: scale(.96) translateY(6px); } 100%{ opacity:1; transform: scale(1) translateY(0); } }
 
@@ -119,6 +159,13 @@
 
     .footer{ margin:16px auto 0; text-align:center; font-size:12px; color:#8a8a8a; }
 
+    /* Nubes flotando */
+    .cloud{ animation: cloudDrift linear infinite; }
+    @keyframes cloudDrift {
+      0%   { transform: translateX(-8%); }
+      100% { transform: translateX(8%); }
+    }
+
     @media (max-width:560px){
       .bubble{ left:10%; bottom:66%; }
     }
@@ -128,55 +175,81 @@
   <div class="wrap">
     <div class="quote" id="quoteText">“Contigo, cada latido encuentra su abrazo.”</div>
 
-    <div class="scene" aria-label="Paisaje romántico con pingüinitos">
-      <!-- Sol, montañas gris/rosa y cielo azul -->
-      <svg class="bg-svg" viewBox="0 0 1000 560" role="img" aria-hidden="true">
+    <div class="scene" aria-label="Paisaje natural con pingüinitos">
+      <!-- Sol, montañas verdes, nubes y nieve en pasto -->
+      <svg class="bg-svg" viewBox="0 0 1000 560" aria-hidden="true">
         <defs>
           <radialGradient id="sunG" cx="75%" cy="18%" r="28%">
             <stop offset="0%"  stop-color="#ffe6a8"/>
             <stop offset="40%" stop-color="#ffc978"/>
             <stop offset="80%" stop-color="rgba(255,201,120,0)"/>
           </radialGradient>
-          <!-- Montaña gris (izq) -->
-          <linearGradient id="mountGray" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%"   stop-color="#d6dbe2"/>
-            <stop offset="100%" stop-color="#b7c3ce"/>
-          </linearGradient>
-          <!-- Montaña rosa (der) muy suave -->
-          <linearGradient id="mountPink" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%"   stop-color="#ffd6e3"/>
-            <stop offset="100%" stop-color="#ffc2d2"/>
-          </linearGradient>
         </defs>
-        <circle cx="770" cy="110" r="180" fill="url(#sunG)" opacity=".9"/>
-        <!-- Montaña del fondo (gris) -->
+
+        <!-- Sol -->
+        <circle cx="770" cy="110" r="170" fill="url(#sunG)" opacity=".9"/>
+
+        <!-- Nubes blancas (varias, con sutil animación) -->
+        <g fill="#ffffff" opacity=".95">
+          <g class="cloud" style="animation-duration: 36s;">
+            <ellipse cx="180" cy="100" rx="60" ry="28"/>
+            <ellipse cx="220" cy="96" rx="44" ry="24"/>
+            <ellipse cx="140" cy="106" rx="40" ry="20"/>
+          </g>
+          <g class="cloud" style="animation-duration: 48s;">
+            <ellipse cx="520" cy="70" rx="56" ry="26"/>
+            <ellipse cx="560" cy="66" rx="40" ry="22"/>
+            <ellipse cx="480" cy="76" rx="36" ry="18"/>
+          </g>
+          <g class="cloud" style="animation-duration: 52s;">
+            <ellipse cx="880" cy="140" rx="70" ry="30"/>
+            <ellipse cx="930" cy="136" rx="46" ry="24"/>
+            <ellipse cx="830" cy="146" rx="38" ry="18"/>
+          </g>
+        </g>
+
+        <!-- Montañas verdes (fondo y frente) -->
         <path d="M-20 380 C120 300, 240 300, 380 380 S 600 460, 760 380 S 900 300, 1120 380 L1120 560 L-20 560 Z"
-              fill="url(#mountGray)" opacity=".85"/>
-        <!-- Montaña del frente (rosa suave) -->
+              fill="var(--mountBack)" opacity=".95"/>
         <path d="M-40 410 C80 330, 240 330, 400 410 S 600 490, 780 410 S 940 330, 1120 410 L1120 560 L-40 560 Z"
-              fill="url(#mountPink)" opacity=".95"/>
+              fill="var(--mountFront)" opacity=".98"/>
+
+        <!-- Parches de nieve sobre el pasto (suaves) -->
+        <g fill="var(--snow)" opacity=".9">
+          <ellipse cx="180" cy="470" rx="80" ry="20"/>
+          <ellipse cx="360" cy="495" rx="110" ry="26" opacity=".85"/>
+          <ellipse cx="620" cy="485" rx="90" ry="22" opacity=".8"/>
+          <ellipse cx="820" cy="470" rx="70" ry="18" opacity=".85"/>
+        </g>
       </svg>
 
       <!-- Alberca -->
       <div class="pool" aria-hidden="true"></div>
 
-      <!-- Pingüinos con wrappers fijos y grupo interno animable -->
-      <svg class="bg-svg" viewBox="0 0 1000 560" role="img" aria-label="Pingüino gris invitando a pingüina rosa">
-        <!-- Izquierda (gris) -->
+      <!-- Pingüinos -->
+      <svg class="bg-svg" viewBox="0 0 1000 560" role="img" aria-label="Pingüino gris invitando a pingüinita rosa">
+        <!-- Gris (izquierda) -->
         <g id="pengL" transform="translate(300,160)">
           <g class="inner">
+            <!-- sombra -->
             <ellipse cx="0" cy="212" rx="56" ry="14" fill="#000" opacity=".06"/>
+            <!-- cuerpo -->
             <ellipse cx="0" cy="120" rx="82" ry="106" fill="#bbb"/>
             <ellipse cx="0" cy="145" rx="64" ry="80" fill="#fff"/>
+            <!-- alas -->
             <ellipse cx="-78" cy="142" rx="22" ry="50" fill="#b0b0b0" transform="rotate(-16 -78 142)"/>
             <ellipse cx="78"  cy="142" rx="22" ry="50" fill="#b0b0b0" transform="rotate(16 78 142)"/>
+            <!-- pies -->
             <ellipse cx="-30" cy="212" rx="28" ry="12" fill="#f6b24e"/>
             <ellipse cx="30"  cy="212" rx="28" ry="12" fill="#f6b24e"/>
+            <!-- cara -->
             <circle cx="-24" cy="100" r="6" fill="#222"/>
             <circle cx="24"  cy="100" r="6" fill="#222"/>
             <ellipse cx="-24" cy="114" rx="8" ry="4" fill="#f7b7c6" opacity=".6"/>
             <ellipse cx="24"  cy="114" rx="8" ry="4" fill="#f7b7c6" opacity=".6"/>
+            <!-- pico -->
             <path d="M-9 108 Q0 120 9 108 Q0 112 -9 108 Z" fill="#f6b24e" />
+            <!-- bocas -->
             <path class="mouth-neutral" d="M-12 126 Q0 128 12 126" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/>
             <path class="mouth-happy"   d="M-14 126 Q0 140 14 126" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/>
             <!-- moño -->
@@ -190,29 +263,67 @@
               <ellipse cx="0" cy="10" rx="28" ry="10" fill="#222"/>
               <rect x="-24" y="-2" width="48" height="16" rx="3" fill="#222"/>
             </g>
+
+            <!-- VINO (aparece después del baile) -->
+            <g id="wineL" transform="translate(58,146)">
+              <!-- botellita -->
+              <g transform="translate(0,0)">
+                <rect x="-8" y="-26" width="16" height="26" rx="3" fill="#2e7b57"/>
+                <rect x="-6" y="-34" width="12" height="10" rx="2" fill="#235f45"/>
+                <rect x="-8" y="-16" width="16" height="12" fill="#b51f3a" opacity=".9"/>
+              </g>
+              <!-- copita -->
+              <g transform="translate(34,4)">
+                <path d="M-10 -6 h20 a2 2 0 0 1 2 2 v4 a10 10 0 0 1 -24 0 v-4 a2 2 0 0 1 2 -2z" fill="#ffffff" opacity=".9"/>
+                <rect x="-2" y="6" width="4" height="10" fill="#cfd8dc"/>
+                <ellipse cx="0" cy="18" rx="10" ry="3" fill="#cfd8dc"/>
+                <path d="M-8 -2 h16 v2 a8 8 0 0 1 -16 0 z" fill="#b51f3a" opacity=".85"/>
+              </g>
+            </g>
+
+            <!-- Marca del beso en su mejilla (aparece al final) -->
+            <g id="kissMark" transform="translate(34,112)">
+              <path d="M-10 0 C-6 -6, 6 -6, 10 0 C6 4, -6 4, -10 0 Z" fill="#ff6b8b"/>
+              <path d="M-12 0 C-8 5, 8 5, 12 0" stroke="#ff3b6b" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </g>
           </g>
         </g>
 
-        <!-- Derecha (rosa) -->
+        <!-- Rosa (derecha) -->
         <g id="pengR" transform="translate(700,160)">
           <g class="inner">
             <ellipse cx="0" cy="212" rx="56" ry="14" fill="#000" opacity=".06"/>
-            <path d="M-62 34 C-34 -10, 34 -10, 62 34 C44 32, -44 32, -62 34 Z" fill="#ffffff" opacity=".72"/>
+            <!-- velo -->
+            <path d="M-62 34 C-34 -10, 34 -10, 62 34 C44 32, -44 32, -62 34 Z" fill="#ffffff" opacity=".84"/>
+            <!-- cuerpo -->
             <ellipse cx="0" cy="120" rx="82" ry="106" fill="#f9b6c2"/>
             <ellipse cx="0" cy="145" rx="64" ry="80" fill="#fff"/>
+            <!-- alas -->
             <ellipse cx="-78" cy="142" rx="22" ry="50" fill="#f3a2b3" transform="rotate(-16 -78 142)"/>
             <ellipse cx="78"  cy="142" rx="22" ry="50" fill="#f3a2b3" transform="rotate(16 78 142)"/>
+            <!-- pies -->
             <ellipse cx="-30" cy="212" rx="28" ry="12" fill="#f6b24e"/>
             <ellipse cx="30"  cy="212" rx="28" ry="12" fill="#f6b24e"/>
+            <!-- cara -->
             <circle cx="-24" cy="100" r="6" fill="#222"/>
             <circle cx="24"  cy="100" r="6" fill="#222"/>
             <ellipse cx="-24" cy="114" rx="8" ry="4" fill="#f7b7c6" opacity=".6"/>
             <ellipse cx="24"  cy="114" rx="8" ry="4" fill="#f7b7c6" opacity=".6"/>
             <path d="M-9 108 Q0 120 9 108 Q0 112 -9 108 Z" fill="#f6b24e" />
+            <!-- bocas -->
             <path class="mouth-neutral" d="M-12 126 Q0 128 12 126" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/>
             <path class="mouth-happy"   d="M-14 126 Q0 140 14 126" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/>
-            <circle cx="0" cy="36" r="8" fill="#ff7fa1" opacity=".9"/>
+            <!-- florecita -->
+            <circle cx="0" cy="36" r="8" fill="#ff7fa1" opacity=".95"/>
             <circle cx="0" cy="36" r="3.5" fill="#fff"/>
+            <!-- corazón que vuela al beso -->
+            <g id="kissHeart" transform="translate(-6,120)">
+              <path d="M0 0
+                       c -6 -8 -18 -4 -18 6
+                       c 0 8 10 14 18 22
+                       c 8 -8 18 -14 18 -22
+                       c 0 -10 -12 -14 -18 -6 Z" fill="#ff5c7a"/>
+            </g>
           </g>
         </g>
       </svg>
@@ -226,25 +337,42 @@
     <div class="footer">Hecho con 💗 por Orlis.</div>
   </div>
 
+  <!-- Confeti -->
   <div class="confetti" id="confetti" aria-hidden="true"></div>
 
   <script>
+    // Textos y tiempos
     const CONFIG = {
       quote: '“Contigo, cada latido encuentra su abrazo.”',
       inviteText: 'Orlis te invita a ser su Valentine date 💌',
       finalText: 'Te espero el 14 para un día de novios ✨',
-      heartsCount: 90
+      heartsCount: 90,
+      danceMs: 2600,       // bailan este tiempo
+      showFinalDelay: 320  // como antes
     };
-    document.getElementById('quoteText').textContent = CONFIG.quote;
-    document.getElementById('bubble').textContent   = CONFIG.inviteText;
-    document.getElementById('finalMsg').textContent = CONFIG.finalText;
 
-    document.getElementById('acceptBtn').addEventListener('click', () => {
-      document.body.classList.add('accepted');
-      setTimeout(()=> document.body.classList.add('show-final'), 320);
+    // Aplica textos
+    quoteText.textContent = CONFIG.quote;
+    bubble.textContent    = CONFIG.inviteText;
+    finalMsg.textContent  = CONFIG.finalText;
+
+    acceptBtn.addEventListener('click', () => {
+      // 1) Aceptado: sonríen y bailan
+      document.body.classList.add('accepted','dance');
+
+      // 2) Tras el baile, vino + beso
+      setTimeout(() => {
+        document.body.classList.remove('dance');
+        document.body.classList.add('show-wine');        // aparece el vino
+        setTimeout(() => document.body.classList.add('kiss'), 220); // beso
+      }, CONFIG.danceMs);
+
+      // 3) Mensaje final y confeti
+      setTimeout(()=> document.body.classList.add('show-final'), CONFIG.showFinalDelay);
       shootHearts(CONFIG.heartsCount);
     });
 
+    // Confeti de corazones
     function shootHearts(n=60){
       const confetti = document.getElementById('confetti');
       const emojis = ['💖','💘','💞','💗','💓','❤️','💕','💟'];
