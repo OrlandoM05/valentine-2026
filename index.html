@@ -2,242 +2,122 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-   <title>Orlis te invita 💝</title>  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Orlis te invita 💝</title>
   <meta name="description" content="Invitación especial de San Valentín">
-  <link rel="preconnect" href="https://href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500=swap
-  <style>
-    :root{
-      --theme:#ff4d6d;
-      --theme-dark:#e63956;
-      --sky1:#ffd3e0; /* cielo */
-      --sky2:#ffe9f1;
-      --mount1:#ffd0d8;
-      --mount2:#ffc0cc;
-      --ground:#fff4f7;
+  https://fonts.googleapis.com
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="t{
+      --theme:#ff4d6d; --theme-dark:#e63956;
+      --sky1:#ffd3e0; --sky2:#ffe9f1; --ground:#fff4f7;
       --text:#2a2a2a;
     }
-    *{box-sizing:border-box}
+    *{box-sizing:border-box;margin:0}
     body{
-      margin:0; font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background: linear-gradient(180deg,var(--sky1),var(--sky2));
-      color:var(--text);
-      min-height:100svh; overflow-x:hidden;
-      display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+      color:var(--text); min-height:100svh; overflow-x:hidden;
+      display:flex; justify-content:flex-start; align-items:center; flex-direction:column;
+      padding:18px 14px 42px;
     }
-    .wrap{ width:min(920px,96vw); padding:18px 16px 40px; position:relative; }
-
-    /* Frase */
+    .wrap{ width:min(920px,96vw); }
     .quote{
-      margin-top:10px; text-align:center;
-      font-size:clamp(18px,3.2vw,24px); line-height:1.35;
-      color:#6a3651; font-weight:600;
-      background:#fff0f5; border:1px solid #ffd6e0; border-radius:16px; padding:14px 16px;
-      box-shadow:0 8px 24px rgba(255,77,109,.15);
+      text-align:center; font-weight:600; line-height:1.35;
+      font-size:clamp(18px,3.2vw,24px); color:#6a3651;
+      background:#fff0f5; border:1px solid #ffd6e0; border-radius:16px;
+      padding:12px 14px; box-shadow:0 8px 22px rgba(255,77,109,.16);
+      margin-bottom:14px;
     }
-
-    /* Paisaje */
     .scene{
-      position:relative; margin-top:16px;
-      border-radius:22px; overflow:hidden;
-      height: min(56vh,520px);
-      background: linear-gradient(180deg, var(--sky1) 0%, var(--sky2) 55%, var(--ground) 56%, #fff 100%);
-      border:2px solid #ffd6e0;
+      position:relative; height:min(56vh,520px);
+      background: linear-gradient(180deg, var(--sky1) 0%, var(--sky2) 60%, var(--ground) 61%, #fff 100%);
+      border:2px solid #ffd6e0; border-radius:22px; overflow:hidden;
       box-shadow:0 16px 44px rgba(255,77,109,.18);
     }
-    .mountains, .sun, .stars{ position:absolute; inset:0; pointer-events:none; }
-    .sun{
-      background: radial-gradient(circle at 70% 25%, #ffd6a7 0%, #ffc078 32%, rgba(255,192,120,0) 36%);
-      opacity:.9;
+    .sun{ position:absolute; inset:0;
+      background: radial-gradient(circle at 70% 22%, #ffd9a8 0%, #ffc078 32%, rgba(255,192,120,0) 36%);
+      pointer-events:none; opacity:.9;
     }
-    .mountains::before,
-    .mountains::after{
-      content:""; position:absolute; bottom:18%;
-      width:160%; height:60%;
-      background: radial-gradient(circle at 20% 100%, var(--mount1) 0 40%, rgba(0,0,0,0) 41%),
-                  radial-gradient(circle at 60% 98%, var(--mount2) 0 38%, rgba(0,0,0,0) 39%),
-                  radial-gradient(circle at 90% 100%, var(--mount1) 0 34%, rgba(0,0,0,0) 35%);
-      filter:blur(0.2px);
-      transform:translateX(-10%);
-    }
-    .mountains::after{
-      bottom:12%;
-      background: radial-gradient(circle at 15% 100%, #ffb0c0 0 42%, rgba(0,0,0,0) 43%),
-                  radial-gradient(circle at 55% 98%, #ff99b0 0 40%, rgba(0,0,0,0) 41%),
-                  radial-gradient(circle at 85% 100%, #ffb0c0 0 36%, rgba(0,0,0,0) 37%);
-      opacity:.85;
-    }
-    .stars{
-      background:
-        radial-gradient(circle at 18% 10%, rgba(255,255,255,.8) 0 2px, transparent 3px),
-        radial-gradient(circle at 42% 14%, rgba(255,255,255,.7) 0 2px, transparent 3px),
-        radial-gradient(circle at 68% 8%, rgba(255,255,255,.9) 0 2px, transparent 3px),
-        radial-gradient(circle at 84% 20%, rgba(255,255,255,.6) 0 2px, transparent 3px);
-      opacity:.6; mix-blend-mode:screen;
-    }
-    .ground{
-      position:absolute; left:0; right:0; bottom:0; height:28%;
-      background: linear-gradient(180deg, var(--ground), #ffffff);
-    }
-
-    /* Pingüinos */
-    .penguins{
-      position:absolute; left:50%; bottom:14%;
-      transform:translateX(-50%);
-      width:min(620px,88vw); height:min(360px,52vw);
-    }
-    .penguins img{
-      position:absolute; top:0; left:50%;
-      transform:translateX(-50%);
-      height:100%; object-fit:contain;
-      user-select:none; -webkit-user-drag:none;
-      filter: drop-shadow(0 10px 14px rgba(0,0,0,.12));
-      transition: transform .35s ease, filter .35s ease;
-    }
-    /* Dos copias de la misma imagen, recortadas para simular izq/der */
-    .left { clip-path: inset(0 50% 0 0); }   /* muestra mitad izquierda */
-    .right{ clip-path: inset(0 0 0 50%); }   /* muestra mitad derecha */
-
-    /* Globo del pinguino gris */
+    .ground{ position:absolute; left:0; right:0; bottom:0; height:28%; background: linear-gradient(180deg, var(--ground), #ffffff); }
+    .penguins{ position:absolute; left:50%; bottom:14%; transform:translateX(-50%); width:min(620px,88vw); height:min(360px,52vw); }
+    .penguins img{ position:absolute; top:0; left:50%; transform:translateX(-50%); height:100%; object-fit:contain; user-select:none; -webkit-user-drag:none; filter: drop-shadow(0 10px 14px rgba(0,0,0,.12)); transition: transform .35s ease, filter .35s ease; }
+    .left { clip-path: inset(0 50% 0 0); }
+    .right{ clip-path: inset(0 0 0 50%); }
     .bubble{
-      position:absolute; left:18%; bottom:64%;
-      max-width:min(72%, 440px);
-      background:#ffffff; border:2px solid #ffd1dc; color:#6a3651;
-      padding:10px 14px; border-radius:16px; font-weight:700;
-      box-shadow:0 8px 20px rgba(255,77,109,.18);
+      position:absolute; left:18%; bottom:64%; max-width:min(72%, 440px);
+      background:#fff; border:2px solid #ffd1dc; color:#6a3651; font-weight:700;
+      padding:10px 14px; border-radius:16px; box-shadow:0 8px 20px rgba(255,77,109,.18);
     }
     .bubble::after{
-      content:""; position:absolute; left:22px; bottom:-12px;
-      width:0; height:0; border-left:10px solid transparent;
-      border-right:10px solid transparent; border-top:12px solid #ffffff;
+      content:""; position:absolute; left:22px; bottom:-12px; width:0; height:0;
+      border-left:10px solid transparent; border-right:10px solid transparent; border-top:12px solid #fff;
       filter:drop-shadow(0 2px 0 #ffd1dc);
     }
-
-    /* Botón aceptar */
     .cta{
-      position:absolute; left:50%; bottom:8%;
-      transform:translateX(-50%);
-      display:inline-flex; align-items:center; gap:8px;
-      background:var(--theme); color:#fff; border:none; cursor:pointer;
-      padding:12px 22px; border-radius:999px; font-weight:800; letter-spacing:.2px;
-      box-shadow:0 10px 26px rgba(255,77,109,.32);
-      transition: transform .12s ease, box-shadow .12s ease, background .2s ease;
+      position:absolute; left:50%; bottom:8%; transform:translateX(-50%);
+      padding:12px 22px; border-radius:999px; background:var(--theme); color:#fff; border:none; cursor:pointer;
+      font-weight:800; letter-spacing:.2px; box-shadow:0 10px 26px rgba(255,77,109,.32);
     }
-    .cta:hover{ transform:translate(-50%,-1px); }
-    .cta:active{ transform:translate(-50%,1px); }
-
-    /* Modo aceptado */
-    .accepted .cta{ display:none; }
-    .accepted .bubble{ animation: fadeOut .6s ease forwards .2s; }
-    .accepted .penguins img{
-      filter: drop-shadow(0 14px 18px rgba(255,77,109,.22)) saturate(1.08) brightness(1.04);
-    }
-    .accepted .left { animation: danceL 1.2s ease-in-out infinite; }
-    .accepted .right{ animation: danceR 1.2s ease-in-out infinite; }
-
-    @keyframes danceL{
-      0%,100%{ transform: translateX(-50%) rotate(-4deg) translateY(0); }
-      50%    { transform: translateX(-50%) rotate(4deg)  translateY(-10px); }
-    }
-    @keyframes danceR{
-      0%,100%{ transform: translateX(-50%) rotate(4deg)  translateY(0); }
-      50%    { transform: translateX(-50%) rotate(-4deg) translateY(-10px); }
-    }
-    @keyframes fadeOut {
-      to { opacity:0; transform: translateY(-6px) scale(.98); visibility:hidden; }
-    }
-
-    /* Mensaje final */
-    .final{
-      margin-top:14px; text-align:center; display:none;
-      background:#fff4f7; border:1px solid #ffd6e0; color:#6a3651;
-      border-radius:14px; padding:12px 14px; font-weight:700;
-      box-shadow:0 8px 20px rgba(255,77,109,.18);
-    }
-    .show-final .final{ display:block; animation: pop .45s ease both; }
-    @keyframes pop{
-      0%{ opacity:0; transform: scale(.96) translateY(6px); }
-      100%{ opacity:1; transform: scale(1) translateY(0); }
-    }
-
-    /* Confeti corazones */
+    /* Estado aceptado */
+    body.accepted .cta{ display:none; }
+    body.accepted .bubble{ animation:fadeOut .6s ease forwards .2s; }
+    body.accepted .left { animation:danceL 1.2s ease-in-out infinite; filter:drop-shadow(0 14px 18px rgba(255,77,109,.22)) saturate(1.08) brightness(1.04); }
+    body.accepted .right{ animation:danceR 1.2s ease-in-out infinite; filter:drop-shadow(0 14px 18px rgba(255,77,109,.22)) saturate(1.08) brightness(1.04); }
+    @keyframes danceL { 0%,100%{ transform: translateX(-50%) rotate(-4deg) translateY(0); } 50%{ transform: translateX(-50%) rotate(4deg) translateY(-10px); } }
+    @keyframes danceR { 0%,100%{ transform: translateX(-50%) rotate(4deg) translateY(0); } 50%{ transform: translateX(-50%) rotate(-4deg) translateY(-10px); } }
+    @keyframes fadeOut { to { opacity:0; transform: translateY(-6px) scale(.98); visibility:hidden; } }
+    .final{ margin-top:14px; display:none; text-align:center; font-weight:700; color:#6a3651; background:#fff4f7; border:1px solid #ffd6e0; border-radius:14px; padding:12px 14px; box-shadow:0 8px 20px rgba(255,77,109,.18); }
+    body.show-final .final{ display:block; animation:pop .45s ease both; }
+    @keyframes pop{ 0%{ opacity:0; transform: scale(.96) translateY(6px); } 100%{ opacity:1; transform: scale(1) translateY(0); } }
     .confetti{ position:fixed; inset:0; pointer-events:none; z-index:10; }
-    .heart{
-      position:absolute; font-size:18px; animation: floatUp linear forwards;
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,.15));
-    }
-    @keyframes floatUp{
-      from{ transform: translateY(10px) scale(1); opacity:1; }
-      to  { transform: translateY(-120vh) scale(.85); opacity:0; }
-    }
-
-    /* Footer */
+    .heart{ position:absolute; font-size:18px; animation: floatUp linear forwards; filter: drop-shadow(0 2px 2px rgba(0,0,0,.15)); }
+    @keyframes floatUp{ from{ transform: translateY(10px) scale(1); opacity:1; } to{ transform: translateY(-120vh) scale(.85); opacity:0; } }
     .footer{ margin:16px auto 0; text-align:center; font-size:12px; color:#8a8a8a; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <!-- Frase romántica -->
     <div class="quote" id="quoteText">“Contigo, cada latido encuentra su abrazo.”</div>
 
-    <!-- Escena -->
     <div class="scene" aria-label="Paisaje romántico con pingüinitos">
       <div class="sun"></div>
-      <div class="stars"></div>
-      <div class="mountains"></div>
       <div class="ground"></div>
 
-      <!-- Pingüinos (misma imagen recortada en 2 mitades) -->
-      <div class="penguins" aria-hidden="false">
-        <img class="left"  id="pengLeft"  src="./pinguinos.png" alt="Pingüino gris con moño""Pingüinita    <div class="bubble" id="bubble">Orlis te invita a ser su Valentine date 💌</div>
-
-      <!-- Botón Aceptar -->
+      <div class="penguins">
+        <img class="left"  id="pengLeft"  src="./pinguinos.png" alt="Pingüino gris con" alt"bubble">Orlis te invita a ser su Valentine date 💌</div>
       <button class="cta" id="acceptBtn" aria-label="Aceptar invitación">Aceptar 💖</button>
     </div>
 
-    <!-- Mensaje final -->
     <div class="final" id="finalMsg">Te espero el 14 para un día de novios ✨</div>
-
     <div class="footer">Hecho con 💗 por Orlis.</div>
   </div>
 
   <div class="confetti" id="confetti" aria-hidden="true"></div>
 
   <script>
-    /* ======= CONFIGURA AQUÍ ======= */
+    // Cambia aquí si quieres personalizar frases o color:
     const CONFIG = {
-      imageFile: 'pinguinos.png', // nombre del archivo que subirás
-      quote: '“Contigo, cada latido encuentra su abrazo.”', // tu frase
-      inviteText: 'Orlis te invita a ser su Valentine date 💌', // globo del pingüino gris
-      finalText: 'Te espero el 14 para un día de novios ✨',     // mensaje al aceptar
-      heartsCount: 80, // cantidad de corazones al aceptar
+      quote: '“Contigo, cada latido encuentra su abrazo.”',
+      inviteText: 'Orlis te invita a ser su Valentine date 💌',
+      finalText: 'Te espero el 14 para un día de novios ✨',
+      heartsCount: 80,
       themeColor: '#ff4d6d'
     };
-    /* ============================== */
 
-    // Aplica textos configurables
     document.getElementById('quoteText').textContent = CONFIG.quote;
-    document.getElementById('bubble').textContent = CONFIG.inviteText;
+    document.getElementById('bubble').textContent   = CONFIG.inviteText;
     document.getElementById('finalMsg').textContent = CONFIG.finalText;
 
-    // Garantiza que la imagen de ambos <img> coincida con el archivo subido
-    document.getElementById('pengLeft').src  = './' + CONFIG.imageFile;
-    document.getElementById('pengRight').src = './' + CONFIG.imageFile;
-
-    // Color de tema (opcional)
     if (CONFIG.themeColor){
       document.documentElement.style.setProperty('--theme', CONFIG.themeColor);
       document.documentElement.style.setProperty('--theme-dark', shadeColor(CONFIG.themeColor, -12));
     }
 
-    // Acción ACEPTAR
-    const acceptBtn = document.getElementById('acceptBtn');
-    acceptBtn.addEventListener('click', () => {
-      document.body.classList.add('accepted');     // bailan
-      setTimeout(() => document.body.classList.add('show-final'), 300); // muestra mensaje
+    document.getElementById('acceptBtn').addEventListener('click', () => {
+      document.body.classList.add('accepted');
+      setTimeout(()=> document.body.classList.add('show-final'), 300);
       shootHearts(CONFIG.heartsCount);
     });
 
-    // Corazones confeti
     function shootHearts(n=60){
       const confetti = document.getElementById('confetti');
       const emojis = ['💖','💘','💞','💗','💓','❤️','💕','💟'];
@@ -245,18 +125,15 @@
         const span = document.createElement('span');
         span.className = 'heart';
         span.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-        const size = 16 + Math.random()*18;
         span.style.left = (Math.random()*100) + 'vw';
         span.style.bottom = '-24px';
-        span.style.fontSize = size + 'px';
+        span.style.fontSize = (16 + Math.random()*18) + 'px';
         span.style.animationDuration = (3 + Math.random()*3) + 's';
         span.style.transform = `translateY(0) rotate(${(Math.random()*60-30)}deg)`;
         confetti.appendChild(span);
         setTimeout(()=> span.remove(), 6500);
       }
     }
-
-    // Utilidad para oscurecer/aclarar color
     function shadeColor(hex, percent) {
       const num = parseInt(hex.replace('#',''), 16);
       const amt = Math.round(2.55 * percent);
