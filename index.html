@@ -51,8 +51,8 @@
     }
     .bg-svg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
 
-    /* ⬇️ NUEVO: aseguramos que los pingüinos queden por encima del agua */
-    .penguins-svg{ z-index:3; }
+    /* Pingüinos por encima del agua */
+    .penguins-svg{ position:absolute; inset:0; z-index:3; }
 
     /* Alberca (agua) */
     .pool{
@@ -97,7 +97,7 @@
 
     /* ---------- Animaciones & estados ---------- */
 
-    /* baile: solo cuando body tiene .dance */
+    /* baile infinito: cuando body tiene .dance */
     svg g.inner{ transform-box: fill-box; transform-origin: 50% 75%; }
     body.dance #pengL .inner{ animation: danceL 1400ms cubic-bezier(.17,.67,.32,1) infinite; }
     body.dance #pengR .inner{ animation: danceR 1400ms cubic-bezier(.17,.67,.32,1) infinite; }
@@ -109,19 +109,17 @@
 
     /* vino y beso */
     #wineL, #kissMark, #kissHeart { opacity:0; }
-    body.show-wine #wineL { animation: popIn .6s ease-out forwards; }
+    /* Suavizamos la entrada para que no “salte” */
+    body.show-wine #wineL { animation: popIn .45s ease-out forwards; }
     body.kiss #kissMark { animation: popIn .5s ease-out .1s forwards; }
     body.kiss #kissHeart{ animation: heartFly 1.1s ease-out forwards; }
 
-    /* inclinación al besar (caras) */
-    body.kiss #pengR .inner{ animation: kissLeanR .9s ease-out forwards; }
-    body.kiss #pengL .inner{ animation: shyLeanL .9s ease-out forwards; }
+    /* BESITO: ahora el acercamiento/tilt va en los WRAPS (las .inner siguen bailando) */
+    #pengRWrap, #pengLWrap{ transform-box: fill-box; transform-origin: 50% 75%; }
+    body.kiss #pengRWrap{ animation: approachKissR .9s ease-out forwards; }
+    body.kiss #pengLWrap{ animation: shyLeanL_wrap .9s ease-out forwards; }
 
-    /* ⬇️ NUEVO: acercamiento real de la pinguinita (se desplaza su grupo entero) */
-    #pengRWrap { transform-box: fill-box; transform-origin: 50% 75%; }
-    body.kiss #pengRWrap{ animation: approachR .9s ease-out forwards; }
-
-    /* oculta CTA y globo después de aceptar */
+    /* Oculta CTA y globo después de aceptar */
     body.accepted .cta{ display:none; }
     body.accepted .bubble{ animation:fadeOut .6s ease forwards .2s; }
 
@@ -133,22 +131,18 @@
       0%,100%{ transform: translateY(0) rotate(2deg)  scale(1); }
       50%    { transform: translateY(-8px) rotate(-3deg) scale(1.02); }
     }
-    @keyframes kissLeanR{
-      0%{ transform: translateY(0) rotate(0) }
-      60%{ transform: translate(-14px,-6px) rotate(-10deg) }
-      100%{ transform: translate(-10px,-4px) rotate(-6deg) }
-    }
-    @keyframes shyLeanL{
-      0%{ transform: translateY(0) rotate(0) }
-      60%{ transform: translate(6px,-4px) rotate(4deg) }
-      100%{ transform: translate(4px,-2px) rotate(2deg) }
-    }
 
-    /* ⬇️ NUEVO: avance real (más notorio) */
-    @keyframes approachR{
-      0%  { transform: translate(0,0); }
-      60% { transform: translate(-48px,-6px); }
-      100%{ transform: translate(-36px,-4px); }
+    /* Acercamiento controlado + inclinación del grupo derecho (beso real) */
+    @keyframes approachKissR{
+      0%   { transform: translate(0,0) rotate(0); }
+      60%  { transform: translate(-26px,-4px) rotate(-10deg); }
+      100% { transform: translate(-18px,-2px) rotate(-6deg); }
+    }
+    /* Inclinación leve del grupo izquierdo */
+    @keyframes shyLeanL_wrap{
+      0%   { transform: translate(0,0) rotate(0); }
+      60%  { transform: translate(6px,-4px) rotate(4deg); }
+      100% { transform: translate(4px,-2px) rotate(2deg); }
     }
 
     @keyframes popIn{
@@ -163,7 +157,11 @@
     @keyframes fadeOut{ to{ opacity:0; transform: translateY(-6px) scale(.98); visibility:hidden; } }
 
     /* Mensaje final */
-    .final{ margin-top:14px; display:none; text-align:center; font-weight:700; color:#2e3f46; background:#ffffffcc; border:1px solid #e3eef6; border-radius:14px; padding:12px 14px; box-shadow:0 8px 20px rgba(0,0,0,.06); backdrop-filter: blur(2px); }
+    .final{
+      margin-top:14px; display:none; text-align:center; font-weight:700; color:#2e3f46;
+      background:#ffffffcc; border:1px solid #e3eef6; border-radius:14px; padding:12px 14px;
+      box-shadow:0 8px 20px rgba(0,0,0,.06); backdrop-filter: blur(2px);
+    }
     body.show-final .final{ display:block; animation:pop .45s ease both; }
     @keyframes pop{ 0%{ opacity:0; transform: scale(.96) translateY(6px); } 100%{ opacity:1; transform: scale(1) translateY(0); } }
 
@@ -181,8 +179,21 @@
       100% { transform: translateX(8%); }
     }
 
+    /* Ajuste de acercamiento por tamaño de pantalla */
     @media (max-width:560px){
       .bubble{ left:10%; bottom:66%; }
+      @keyframes approachKissR{
+        0%   { transform: translate(0,0) rotate(0); }
+        60%  { transform: translate(-18px,-4px) rotate(-9deg); }
+        100% { transform: translate(-12px,-2px) rotate(-6deg); }
+      }
+    }
+    @media (min-width:1100px){
+      @keyframes approachKissR{
+        0%   { transform: translate(0,0) rotate(0); }
+        60%  { transform: translate(-32px,-6px) rotate(-10deg); }
+        100% { transform: translate(-22px,-4px) rotate(-6deg); }
+      }
     }
   </style>
 </head>
@@ -191,7 +202,7 @@
     <div class="quote" id="quoteText">Para mi Tomasita</div>
 
     <div class="scene" aria-label="Paisaje natural con pingüinitos">
-      <!-- Sol, montañas verdes, nubes y nieve en pasto -->
+      <!-- Sol, montañas, nubes y nieve -->
       <svg class="bg-svg" viewBox="0 0 1000 560" aria-hidden="true">
         <defs>
           <radialGradient id="sunG" cx="75%" cy="18%" r="28%">
@@ -204,7 +215,7 @@
         <!-- Sol -->
         <circle cx="770" cy="110" r="170" fill="url(#sunG)" opacity=".9"/>
 
-        <!-- Nubes blancas (varias, con sutil animación) -->
+        <!-- Nubes -->
         <g fill="#ffffff" opacity=".95">
           <g class="cloud" style="animation-duration: 36s;">
             <ellipse cx="180" cy="100" rx="60" ry="28"/>
@@ -223,13 +234,13 @@
           </g>
         </g>
 
-        <!-- Montañas verdes (fondo y frente) -->
+        <!-- Montañas -->
         <path d="M-20 380 C120 300, 240 300, 380 380 S 600 460, 760 380 S 900 300, 1120 380 L1120 560 L-20 560 Z"
               fill="var(--mountBack)" opacity=".95"/>
         <path d="M-40 410 C80 330, 240 330, 400 410 S 600 490, 780 410 S 940 330, 1120 410 L1120 560 L-40 560 Z"
               fill="var(--mountFront)" opacity=".98"/>
 
-        <!-- Parches de nieve sobre el pasto (suaves) -->
+        <!-- Parches de nieve -->
         <g fill="var(--snow)" opacity=".9">
           <ellipse cx="180" cy="470" rx="80" ry="20"/>
           <ellipse cx="360" cy="495" rx="110" ry="26" opacity=".85"/>
@@ -241,11 +252,11 @@
       <!-- Alberca -->
       <div class="pool" aria-hidden="true"></div>
 
-      <!-- Pingüinos (AHORA con clase 'penguins-svg' y wrappers para acercamiento real) -->
+      <!-- Pingüinos (SVG) - por encima del agua -->
       <svg class="bg-svg penguins-svg" viewBox="0 0 1000 560" role="img" aria-label="Pingüino gris invitando a pingüinita rosa">
         <!-- WRAP gris -->
         <g id="pengLWrap" transform="translate(300,160)">
-          <!-- Gris (izquierda) -->
+          <!-- Gris -->
           <g id="pengL">
             <g class="inner">
               <!-- sombra -->
@@ -281,8 +292,8 @@
                 <rect x="-24" y="-2" width="48" height="16" rx="3" fill="#222"/>
               </g>
 
-              <!-- 🍷 VINO EN LA ALITA (aparece después del baile) -->
-              <g id="wineL" transform="translate(58,146)">
+              <!-- 🍷 VINO EN LA ALITA (coordenadas ajustadas) -->
+              <g id="wineL" transform="translate(90,142) rotate(-8)">
                 <!-- botellita -->
                 <g transform="translate(0,0)">
                   <rect x="-8" y="-26" width="16" height="26" rx="3" fill="#2e7b57"/>
@@ -298,7 +309,7 @@
                 </g>
               </g>
 
-              <!-- Marca del beso en su mejilla (aparece al final) -->
+              <!-- Marca del beso (mejilla del gris) -->
               <g id="kissMark" transform="translate(34,112)">
                 <path d="M-10 0 C-6 -6, 6 -6, 10 0 C6 4, -6 4, -10 0 Z" fill="#ff6b8b"/>
                 <path d="M-12 0 C-8 5, 8 5, 12 0" stroke="#ff3b6b" stroke-width="2" fill="none" stroke-linecap="round"/>
@@ -354,7 +365,7 @@
       <button class="cta" id="acceptBtn" aria-label="Aceptar invitación">Aceptar 💖</button>
     </div>
 
-    <div class="final" id="finalMsg">Te espera el 14 para un día de novios ✨</div>
+    <div class="final" id="finalMsg">Te espero el 14 para un día de novios ✨</div>
     <div class="footer">Hecho con 💗 por Orlis.</div>
   </div>
 
@@ -368,8 +379,8 @@
       inviteText: 'Orlis te invita a ser su Valentine date 💌',
       finalText: 'Te espero el 14 para un día de novios ✨',
       heartsCount: 90,
-      danceMs: 2600,       // bailan este tiempo
-      showFinalDelay: 320  // como antes
+      danceMs: 1800,        // tiempo antes de mostrar el vino y el beso
+      showFinalDelay: 320
     };
 
     // Aplica textos
@@ -378,14 +389,13 @@
     finalMsg.textContent  = CONFIG.finalText;
 
     acceptBtn.addEventListener('click', () => {
-      // 1) Aceptado: sonríen y bailan
+      // 1) Aceptado: sonríen y comienzan a bailar (∞)
       document.body.classList.add('accepted','dance');
 
-      // 2) Tras el baile, vino + beso (con acercamiento real)
+      // 2) Mostramos vino y luego beso (sin dejar de bailar)
       setTimeout(() => {
-        document.body.classList.remove('dance');
-        document.body.classList.add('show-wine');        // aparece el vino en la alita
-        setTimeout(() => document.body.classList.add('kiss'), 220); // beso + acercamiento
+        document.body.classList.add('show-wine');              // copa en la alita
+        setTimeout(() => document.body.classList.add('kiss'), 220); // acercamiento + marca de beso
       }, CONFIG.danceMs);
 
       // 3) Mensaje final y confeti
