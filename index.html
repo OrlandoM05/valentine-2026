@@ -4,9 +4,6 @@
   <meta charset="utf-8">
   <title>Orlis te invita 💝</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Fuente (opcional) -->
-  https://fonts.googleapis.com
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;swap
   <style>
     :root{
       --theme:#ff4d6d; --theme-dark:#e63956;
@@ -15,13 +12,15 @@
     }
     *{box-sizing:border-box;margin:0}
     body{
-      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
       background: linear-gradient(180deg,var(--sky1),var(--sky2));
       color:var(--text); min-height:100svh; overflow-x:hidden;
       display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
       padding:18px 14px 42px;
     }
     .wrap{ width:min(920px,96vw); }
+
+    /* Frase */
     .quote{
       text-align:center; font-weight:600; line-height:1.35;
       font-size:clamp(18px,3.2vw,24px); color:#6a3651;
@@ -29,23 +28,30 @@
       padding:12px 14px; box-shadow:0 8px 22px rgba(255,77,109,.16);
       margin-bottom:14px;
     }
+
+    /* Escena */
     .scene{
-      position:relative; height:min(56vh,520px);
+      position:relative; height:min(58vh,560px);
       background: linear-gradient(180deg, var(--sky1) 0%, var(--sky2) 60%, var(--ground) 61%, #fff 100%);
       border:2px solid #ffd6e0; border-radius:22px; overflow:hidden;
       box-shadow:0 16px 44px rgba(255,77,109,.18);
     }
     .sun{ position:absolute; inset:0;
-      background: radial-gradient(circle at 70% 22%, #ffd9a8 0%, #ffc078 32%, rgba(255,192,120,0) 36%);
+      background: radial-gradient(circle at 72% 20%, #ffd9a8 0%, #ffc078 32%, rgba(255,192,120,0) 36%);
       pointer-events:none; opacity:.9;
     }
     .ground{ position:absolute; left:0; right:0; bottom:0; height:28%; background: linear-gradient(180deg, var(--ground), #ffffff); }
-    .penguins{ position:absolute; left:50%; bottom:14%; transform:translateX(-50%); width:min(620px,88vw); height:min(360px,52vw); }
-    .penguins img{ position:absolute; top:0; left:50%; transform:translateX(-50%); height:100%; object-fit:contain; user-select:none; -webkit-user-drag:none; filter: drop-shadow(0 10px 14px rgba(0,0,0,.12)); transition: transform .35s ease, filter .35s ease; }
-    .left { clip-path: inset(0 50% 0 0); }
-    .right{ clip-path: inset(0 0 0 50%); }
+
+    /* Contenedor de pingüinos (SVG centrado) */
+    .penguins{
+      position:absolute; left:50%; bottom:14%; transform:translateX(-50%);
+      width:min(680px,92vw); height:min(380px,56vw);
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.10));
+    }
+
+    /* Globo del pingüino gris */
     .bubble{
-      position:absolute; left:18%; bottom:64%; max-width:min(72%, 440px);
+      position:absolute; left:18%; bottom:64%; max-width:min(72%, 480px);
       background:#fff; border:2px solid #ffd1dc; color:#6a3651; font-weight:700;
       padding:10px 14px; border-radius:16px; box-shadow:0 8px 20px rgba(255,77,109,.18);
     }
@@ -54,38 +60,119 @@
       border-left:10px solid transparent; border-right:10px solid transparent; border-top:12px solid #fff;
       filter:drop-shadow(0 2px 0 #ffd1dc);
     }
+
+    /* Botón aceptar */
     .cta{
       position:absolute; left:50%; bottom:8%; transform:translateX(-50%);
       padding:12px 22px; border-radius:999px; background:var(--theme); color:#fff; border:none; cursor:pointer;
       font-weight:800; letter-spacing:.2px; box-shadow:0 10px 26px rgba(255,77,109,.32);
     }
-    /* Estado aceptado */
+
+    /* Estado aceptado: baile y caritas felices */
     body.accepted .cta{ display:none; }
     body.accepted .bubble{ animation:fadeOut .6s ease forwards .2s; }
-    body.accepted .left { animation:danceL 1.2s ease-in-out infinite; filter:drop-shadow(0 14px 18px rgba(255,77,109,.22)) saturate(1.08) brightness(1.04); }
-    body.accepted .right{ animation:danceR 1.2s ease-in-out infinite; filter:drop-shadow(0 14px 18px rgba(255,77,109,.22)) saturate(1.08) brightness(1.04); }
-    @keyframes danceL { 0%,100%{ transform: translateX(-50%) rotate(-4deg) translateY(0); } 50%{ transform: translateX(-50%) rotate(4deg) translateY(-10px); } }
-    @keyframes danceR { 0%,100%{ transform: translateX(-50%) rotate(4deg) translateY(0); } 50%{ transform: translateX(-50%) rotate(-4deg) translateY(-10px); } }
-    @keyframes fadeOut { to { opacity:0; transform: translateY(-6px) scale(.98); visibility:hidden; } }
+    body.accepted #pengL, body.accepted #pengR{
+      animation: dance 1.2s ease-in-out infinite;
+      filter: drop-shadow(0 14px 18px rgba(255,77,109,.22));
+    }
+    body.accepted .mouth-neutral{ opacity:0 }
+    body.accepted .mouth-happy{ opacity:1 }
+
+    @keyframes dance{
+      0%,100%{ transform: translateY(0) rotate(0); }
+      25%    { transform: translateY(-10px) rotate(-4deg); }
+      75%    { transform: translateY(-10px) rotate(4deg); }
+    }
+    @keyframes fadeOut{ to{ opacity:0; transform: translateY(-6px) scale(.98); visibility:hidden; } }
+
+    /* Mensaje final */
     .final{ margin-top:14px; display:none; text-align:center; font-weight:700; color:#6a3651; background:#fff4f7; border:1px solid #ffd6e0; border-radius:14px; padding:12px 14px; box-shadow:0 8px 20px rgba(255,77,109,.18); }
     body.show-final .final{ display:block; animation:pop .45s ease both; }
     @keyframes pop{ 0%{ opacity:0; transform: scale(.96) translateY(6px); } 100%{ opacity:1; transform: scale(1) translateY(0); } }
+
+    /* Confeti corazones */
     .confetti{ position:fixed; inset:0; pointer-events:none; z-index:10; }
     .heart{ position:absolute; font-size:18px; animation: floatUp linear forwards; filter: drop-shadow(0 2px 2px rgba(0,0,0,.15)); }
     @keyframes floatUp{ from{ transform: translateY(10px) scale(1); opacity:1; } to{ transform: translateY(-120vh) scale(.85); opacity:0; } }
+
     .footer{ margin:16px auto 0; text-align:center; font-size:12px; color:#8a8a8a; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="quote" id="quoteText">"Contigo, cada latido encuentra su abrazo."</div>
+    <div class="quote" id="quoteText">“Contigo, cada latido encuentra su abrazo.”</div>
 
     <div class="scene" aria-label="Paisaje romántico con pingüinitos">
       <div class="sun"></div>
       <div class="ground"></div>
 
-      <div class="penguins">
-        <img class="left"  id="pengLeft"  src="./pinguinos.png" alt="Pingüino gris con molt="Pingüinitais te invita a ser su Valentine date 💌</div>
+      <!-- SVG de pingüinos: gris con moño (izq) y rosa con velo (der). No necesita imágenes externas. -->
+      <svg class="penguins" viewBox="0 0 700 380" role="img" aria-label="Pingüino gris invitando a pingüina rosa">
+        <!-- Pingüino gris -->
+        <g id="pengL" transform="translate(180,40)">
+          <!-- Sombrerito / moño -->
+          <g transform="translate(0,-10)">
+            <ellipse cx="0" cy="20" rx="26" ry="10" fill="#222"/>
+            <rect x="-22" y="-2" width="44" height="16" rx="3" fill="#222"/>
+          </g>
+          <!-- Cuerpo -->
+          <ellipse cx="0" cy="120" rx="78" ry="100" fill="#bbb" />
+          <ellipse cx="0" cy="140" rx="60" ry="78" fill="#fff" />
+          <!-- Alas -->
+          <ellipse cx="-70" cy="140" rx="20" ry="46" fill="#b0b0b0" transform="rotate(-18 -70 140)"/>
+          <ellipse cx="70" cy="140" rx="20" ry="46" fill="#b0b0b0" transform="rotate(18 70 140)"/>
+          <!-- Pies -->
+          <ellipse cx="-28" cy="210" rx="26" ry="12" fill="#f6b24e"/>
+          <ellipse cx="28"  cy="210" rx="26" ry="12" fill="#f6b24e"/>
+          <!-- Cara -->
+          <circle cx="-22" cy="100" r="6" fill="#222"/>
+          <circle cx="22"  cy="100" r="6" fill="#222"/>
+          <ellipse cx="-22" cy="112" rx="8" ry="4" fill="#f7b7c6" opacity=".6"/>
+          <ellipse cx="22"  cy="112" rx="8" ry="4" fill="#f7b7c6" opacity=".6"/>
+          <!-- Pico -->
+          <path d="M-8 108 Q0 120 8 108 Q0 112 -8 108 Z" fill="#f6b24e" />
+          <!-- Boca (dos estados) -->
+          <path class="mouth-neutral" d="M-10 124 Q0 126 10 124" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round" opacity="1"/>
+          <path class="mouth-happy"   d="M-12 124 Q0 136 12 124" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round" opacity="0"/>
+          <!-- Moñito -->
+          <g transform="translate(0,162)">
+            <path d="M-26 0 L-4 10 L-4 -10 Z" fill="#222"/>
+            <path d="M26 0 L4 10 L4 -10 Z" fill="#222"/>
+            <circle cx="0" cy="0" r="6" fill="#222"/>
+          </g>
+        </g>
+
+        <!-- Pingüina rosa -->
+        <g id="pengR" transform="translate(520,40)">
+          <!-- Velo -->
+          <path d="M-58 32 C-30 -12, 30 -12, 58 32 C40 30, -40 30, -58 32 Z" fill="#ffffff" opacity=".7"/>
+          <!-- Cuerpo -->
+          <ellipse cx="0" cy="120" rx="78" ry="100" fill="#f9b6c2" />
+          <ellipse cx="0" cy="140" rx="60" ry="78" fill="#fff" />
+          <!-- Alas -->
+          <ellipse cx="-70" cy="140" rx="20" ry="46" fill="#f3a2b3" transform="rotate(-18 -70 140)"/>
+          <ellipse cx="70" cy="140" rx="20" ry="46" fill="#f3a2b3" transform="rotate(18 70 140)"/>
+          <!-- Pies -->
+          <ellipse cx="-28" cy="210" rx="26" ry="12" fill="#f6b24e"/>
+          <ellipse cx="28"  cy="210" rx="26" ry="12" fill="#f6b24e"/>
+          <!-- Cara -->
+          <circle cx="-22" cy="100" r="6" fill="#222"/>
+          <circle cx="22"  cy="100" r="6" fill="#222"/>
+          <ellipse cx="-22" cy="112" rx="8" ry="4" fill="#f7b7c6" opacity=".6"/>
+          <ellipse cx="22"  cy="112" rx="8" ry="4" fill="#f7b7c6" opacity=".6"/>
+          <!-- Pico -->
+          <path d="M-8 108 Q0 120 8 108 Q0 112 -8 108 Z" fill="#f6b24e" />
+          <!-- Bocas -->
+          <path class="mouth-neutral" d="M-10 124 Q0 126 10 124" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round" opacity="1"/>
+          <path class="mouth-happy"   d="M-12 124 Q0 136 12 124" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round" opacity="0"/>
+          <!-- Detalle flor -->
+          <circle cx="0" cy="36" r="8" fill="#ff7fa1" opacity=".9"/>
+          <circle cx="0" cy="36" r="3.5" fill="#fff"/>
+        </g>
+      </svg>
+
+      <!-- Globo y CTA -->
+      <div class="bubble" id="bubble">Orlis te invita a ser su Valentine date 💌</div>
       <button class="cta" id="acceptBtn" aria-label="Aceptar invitación">Aceptar 💖</button>
     </div>
 
@@ -96,29 +183,18 @@
   <div class="confetti" id="confetti" aria-hidden="true"></div>
 
   <script>
-    // Personaliza aquí si quieres (texto/colores/archivo de imagen):
-    const IMAGE = 'pinguinos.png'; // cambia si tu archivo tiene otro nombre
+    // Personaliza si quieres:
     const CONFIG = {
-      quote: '"Contigo, cada latido encuentra su abrazo."',
+      quote: '“Contigo, cada latido encuentra su abrazo.”',
       inviteText: 'Orlis te invita a ser su Valentine date 💌',
       finalText: 'Te espero el 14 para un día de novios ✨',
-      heartsCount: 80,
+      heartsCount: 90,
       themeColor: '#ff4d6d'
     };
-
-    // Textos
+    // Aplica textos
     document.getElementById('quoteText').textContent = CONFIG.quote;
     document.getElementById('bubble').textContent   = CONFIG.inviteText;
     document.getElementById('finalMsg').textContent = CONFIG.finalText;
-    // Imagen (ambas mitades usan el mismo archivo)
-    document.getElementById('pengLeft').src  = './' + IMAGE;
-    document.getElementById('pengRight').src = './' + IMAGE;
-
-    // Color de tema
-    if (CONFIG.themeColor){
-      document.documentElement.style.setProperty('--theme', CONFIG.themeColor);
-      document.documentElement.style.setProperty('--theme-dark', shadeColor(CONFIG.themeColor, -12));
-    }
 
     // Botón Aceptar
     document.getElementById('acceptBtn').addEventListener('click', () => {
@@ -143,19 +219,6 @@
         confetti.appendChild(span);
         setTimeout(()=> span.remove(), 6500);
       }
-    }
-
-    // Utilidad para oscurecer/aclarar color
-    function shadeColor(hex, percent) {
-      const num = parseInt(hex.replace('#',''), 16);
-      const amt = Math.round(2.55 * percent);
-      const R = (num >> 16) + amt;
-      const G = (num >> 8 & 0x00FF) + amt;
-      const B = (num & 0x0000FF) + amt;
-      return '#' + (0x1000000 +
-        (R<255?(R<1?0:R):255)*0x10000 +
-        (G<255?(G<1?0:G):255)*0x100 +
-        (B<255?(B<1?0:B):255)).toString(16).slice(1);
     }
   </script>
 </body>
