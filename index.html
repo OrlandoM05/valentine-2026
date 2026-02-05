@@ -17,15 +17,32 @@
       --snow:#ffffff;
     }
 
-    *{box-sizing:border-box;margin:0}
+    /* Reset mínimo */
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body{
+      margin:0;
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      background: radial-gradient(circle at 12% 18%, #e6f5ff 0 22%, transparent 23%),
-                  radial-gradient(circle at 88% 28%, #e6f5ff 0 18%, transparent 19%),
-                  var(--skyBottom);
       color:var(--text);
-      min-height:100svh; overflow-x:hidden;
-      display:flex; flex-direction:column; align-items:center; justify-content:flex); color:#2e3f46;      display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+      background:
+        radial-gradient(circle at 12% 18%, #e6f5ff 0 22%, transparent 23%),
+        radial-gradient(circle at 88% 28%, #e6f5ff 0 18%, transparent 19%),
+        var(--skyBottom);
+      display:flex; align-items:flex-start; justify-content:center;
+      padding:18px 14px 42px;
+      overflow-x:hidden;
+    }
+
+    /* Contenedor: evita “columna mini” y centra */
+    .wrap{
+      width:clamp(320px, 96vw, 980px);
+      margin:0 auto;
+    }
+
+    /* Frase */
+    .quote{
+      text-align:center; font-weight:600; line-height:1.35;
+      font-size:clamp(18px,3.2vw,24px); color:#2e3f46;
       background:#ffffffcc; border:1px solid #e3eef6; border-radius:16px;
       padding:12px 14px; box-shadow:0 8px 22px rgba(0,0,0,.06);
       margin-bottom:14px; backdrop-filter: blur(2px);
@@ -33,7 +50,7 @@
 
     /* Escena */
     .scene{
-      position:relative; height:min(60vh,560px);
+      position:relative; width:100%; height:min(60vh,560px);
       background:
         linear-gradient(180deg, var(--skyTop) 0%, var(--skyBottom) 58%,
                                  var(--grassTop) 59%, var(--grassBottom) 100%);
@@ -41,16 +58,14 @@
       box-shadow:0 16px 44px rgba(0,0,0,.08);
       isolation:isolate;
     }
-    .bg-svg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+    .bg-svg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; display:block; }
 
-    /* Capas */
-    .tulips-svg{ position:absolute; inset:0; z-index:3; }    /* justo encima del agua */
-    .penguins-svg{ position:absolute; inset:0; z-index:4; }  /* por encima de los tulipanes */
-    .nice{ position:absolute; left:50%; bottom:12%; transform:translateX(-50%);
-           background:#ffffffdd; border:1px solid #e7d5da; color:#6a3651; font-weight:700;
-           padding:10px 14px; border-radius:14px; box-shadow:0 8px 20px rgba(0,0,0,.06);
-           display:none; z-index:5; }
-    body.accepted .nice{ display:block; animation: pop .45s ease both; }
+    /* Capas ordenadas */
+    .pool     { z-index:2; }
+    .tulips   { z-index:3; }
+    .penguins { z-index:4; }
+    .ui-top   { z-index:5; }
+    .ui-msg   { z-index:6; }
 
     /* Alberca (agua) */
     .pool{
@@ -62,7 +77,6 @@
                                   #e8fbff 0%, #c8efff 28%, #a6ddff 60%, #8ccfff 100%);
       box-shadow: inset 0 10px 18px rgba(255,255,255,.85),
                   inset 0 -8px 18px rgba(0,0,0,.06);
-      z-index:2;
     }
     .pool::before,.pool::after{
       content:""; position:absolute; inset:0; border-radius:50%;
@@ -72,12 +86,11 @@
     .pool::after{ border-width:1px; inset:6%; opacity:.45; animation-duration:7.5s; }
     @keyframes ripple{ 0%,100%{ transform:scale(1); opacity:.65 } 50%{ transform:scale(1.02); opacity:.35 } }
 
-    /* Globo y CTA */
+    /* Globo y CTA (UI superior) */
     .bubble{
       position:absolute; left:18%; bottom:64%; max-width:min(72%, 520px);
       background:#fff; border:2px solid #ffd1dc; color:#6a3651; font-weight:700;
       padding:10px 14px; border-radius:16px; box-shadow:0 8px 20px rgba(255,77,109,.18);
-      z-index:5;
     }
     .bubble::after{
       content:""; position:absolute; left:22px; bottom:-12px; width:0; height:0;
@@ -88,16 +101,25 @@
       position:absolute; left:50%; bottom:8%; transform:translateX(-50%);
       padding:12px 24px; border-radius:999px; background:var(--theme); color:#fff; border:none; cursor:pointer;
       font-weight:800; letter-spacing:.2px; box-shadow:0 10px 26px rgba(255,77,109,.32);
-      z-index:5;
     }
+
+    /* Mensaje bonito dentro de la escena (UI medio) */
+    .nice{
+      position:absolute; left:50%; bottom:12%; transform:translateX(-50%);
+      background:#ffffffdd; border:1px solid #e7d5da; color:#6a3651; font-weight:700;
+      padding:10px 14px; border-radius:14px; box-shadow:0 8px 20px rgba(0,0,0,.06);
+      display:none;
+    }
+
+    /* Estados al aceptar */
     body.accepted .cta{ display:none; }
     body.accepted .bubble{ animation:fadeOut .6s ease forwards .2s; }
+    body.accepted .nice{ display:block; animation: pop .45s ease both; }
 
-    /* Pingüinos bailando en su lugar (∞) */
+    /* Pingüinos bailando en su lugar (∞) y sonriendo */
     svg g.inner{ transform-box: fill-box; transform-origin: 50% 75%; }
     body.accepted #pengL .inner{ animation: danceL 1400ms cubic-bezier(.17,.67,.32,1) infinite; }
     body.accepted #pengR .inner{ animation: danceR 1400ms cubic-bezier(.17,.67,.32,1) infinite; }
-
     .mouth-happy{ opacity:0; }
     body.accepted .mouth-neutral{ opacity:0; }
     body.accepted .mouth-happy{ opacity:1; }
@@ -114,14 +136,13 @@
     /* Tulipanes: crecimiento al aceptar */
     .tulip .stem, .tulip .leaf { transform-origin: center bottom; transform: scaleY(0.1); opacity:0; }
     .tulip .petals{ transform-origin: center bottom; transform: translateY(8px) scale(0.6); opacity:0; }
-    body.bloom .tulip .stem{ animation: growStem .8s ease-out forwards; }
-    body.bloom .tulip .leaf{ animation: growStem .8s ease-out .08s forwards; }
-    body.bloom .tulip .petals{ animation: openPetal .6s ease-out .35s forwards; }
-    /* salidas escalonadas */
-    .tulip[data-d="1"] .stem, .tulip[data-d="1"] .leaf, .tulip[data-d="1"] .petals{ animation-delay: calc(var(--d,0s) + .0s); }
-    .tulip[data-d="2"] .stem, .tulip[data-d="2"] .leaf, .tulip[data-d="2"] .petals{ animation-delay: calc(var(--d,0s) + .12s); }
-    .tulip[data-d="3"] .stem, .tulip[data-d="3"] .leaf, .tulip[data-d="3"] .petals{ animation-delay: calc(var(--d,0s) + .24s); }
-    .tulip[data-d="4"] .stem, .tulip[data-d="4"] .leaf, .tulip[data-d="4"] .petals{ animation-delay: calc(var(--d,0s) + .36s); }
+    body.accepted .tulip .stem{ animation: growStem .8s ease-out forwards; }
+    body.accepted .tulip .leaf{ animation: growStem .8s ease-out .08s forwards; }
+    body.accepted .tulip .petals{ animation: openPetal .6s ease-out .35s forwards; }
+    .tulip[data-d="1"] .stem, .tulip[data-d="1"] .leaf, .tulip[data-d="1"] .petals{ animation-delay: .00s; }
+    .tulip[data-d="2"] .stem, .tulip[data-d="2"] .leaf, .tulip[data-d="2"] .petals{ animation-delay: .12s; }
+    .tulip[data-d="3"] .stem, .tulip[data-d="3"] .leaf, .tulip[data-d="3"] .petals{ animation-delay: .24s; }
+    .tulip[data-d="4"] .stem, .tulip[data-d="4"] .leaf, .tulip[data-d="4"] .petals{ animation-delay: .36s; }
 
     @keyframes growStem{
       0%{ transform: scaleY(0.1); opacity:0; }
@@ -132,14 +153,15 @@
       100%{ transform: translateY(0)    scale(1);   opacity:1; }
     }
 
-    /* Mensaje final (debajo de la escena) */
+    /* Mensaje final debajo de la escena */
     .final{
       margin-top:14px; display:none; text-align:center; font-weight:700; color:#2e3f46;
       background:#ffffffcc; border:1px solid #e3eef6; border-radius:14px; padding:12px 14px;
       box-shadow:0 8px 20px rgba(0,0,0,.06); backdrop-filter: blur(2px);
     }
-    body.show-final .final{ display:block; animation:pop .45s ease both; }
+    body.accepted .final{ display:block; animation:pop .45s ease both; }
 
+    /* Efectos */
     @keyframes pop{ 0%{ opacity:0; transform: scale(.96) translateY(6px); } 100%{ opacity:1; transform: scale(1) translateY(0); } }
     @keyframes fadeOut{ to{ opacity:0; transform: translateY(-6px) scale(.98); visibility:hidden; } }
 
@@ -149,6 +171,7 @@
     .cloud{ animation: cloudDrift linear infinite; }
     @keyframes cloudDrift { 0%{ transform: translateX(-8%); } 100%{ transform: translateX(8%); } }
 
+    /* Responsive */
     @media (max-width:560px){
       .bubble{ left:10%; bottom:66%; }
       .nice{ bottom:10%; font-size:14px; }
@@ -160,7 +183,8 @@
     <div class="quote" id="quoteText">Para mi Tomasita</div>
 
     <div class="scene" aria-label="Paisaje natural con pingüinitos">
-      <!-- Sol, montañas, nubes y nieve -->
+
+      <!-- Fondo: sol, nubes, montañas, nieve -->
       <svg class="bg-svg" viewBox="0 0 1000 560" aria-hidden="true">
         <defs>
           <radialGradient id="sunG" cx="75%" cy="18%" r="28%">
@@ -208,14 +232,12 @@
       </svg>
 
       <!-- Alberca -->
-      <div class="pool" aria-hidden="true"></div>
+      <div class="pool"></div>
 
-      <!-- Tulipanes (debajo de los pingüinos, encima del agua) -->
-      <svg class="bg-svg tulips-svg" viewBox="0 0 1000 560" aria-hidden="true">
-        <!-- Función: dibuja un tulipán simple con tallo, hojas y pétalos -->
-        <!-- Clúster izquierdo -->
+      <!-- Tulipanes (debajo de los pingus) -->
+      <svg class="bg-svg tulips" viewBox="0 0 1000 560" aria-hidden="true">
+        <!-- Izquierda -->
         <g transform="translate(290,430) scale(1)">
-          <!-- tulipanes escalonados -->
           <g class="tulip" data-d="1">
             <rect class="stem" x="-2" y="-48" width="4" height="52" fill="#3a9155"/>
             <path class="leaf" d="M-2,-20 c-18,10 -18,26 0,16" fill="#4aa56a" />
@@ -223,8 +245,6 @@
             <g class="petals" transform="translate(0,-48)">
               <path d="M0,0 c18,0 22,16 10,28 c-6,6 -14,10 -22,10 c-8,0 -16,-4 -22,-10 C-46,16 -42,0 -24,0 z"
                     fill="#ff6b8b"/>
-              <circle cx="-12" cy="4" r="4" fill="#ff3b6b"/>
-              <circle cx="12"  cy="4" r="4" fill="#ff3b6b"/>
             </g>
           </g>
           <g class="tulip" data-d="2" transform="translate(34,4) scale(.9)">
@@ -246,8 +266,7 @@
             </g>
           </g>
         </g>
-
-        <!-- Clúster derecho -->
+        <!-- Derecha -->
         <g transform="translate(710,430) scale(1)">
           <g class="tulip" data-d="2">
             <rect class="stem" x="-2" y="-48" width="4" height="52" fill="#3a9155"/>
@@ -279,8 +298,8 @@
         </g>
       </svg>
 
-      <!-- Pingüinos (SIN movimiento de posición, solo baile al aceptar) -->
-      <svg class="bg-svg penguins-svg" viewBox="0 0 1000 560" role="img" aria-label="Pingüino gris y pingüinita rosa">
+      <!-- Pingüinos (bailan en su lugar al aceptar) -->
+      <svg class="bg-svg penguins" viewBox="0 0 1000 560" role="img" aria-label="Pingüino gris y pingüinita rosa">
         <!-- Gris (izquierda) -->
         <g id="pengL" transform="translate(300,160)">
           <g class="inner">
@@ -298,13 +317,11 @@
             <path d="M-9 108 Q0 120 9 108 Q0 112 -9 108 Z" fill="#f6b24e" />
             <path class="mouth-neutral" d="M-12 126 Q0 128 12 126" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/>
             <path class="mouth-happy"   d="M-14 126 Q0 140 14 126" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/>
-            <!-- moño -->
             <g transform="translate(0,166)">
               <path d="M-28 0 L-4 10 L-4 -10 Z" fill="#222"/>
               <path d="M28 0 L4 10 L4 -10 Z" fill="#222"/>
               <circle cx="0" cy="0" r="6" fill="#222"/>
             </g>
-            <!-- sombrero -->
             <g transform="translate(0,10)">
               <ellipse cx="0" cy="10" rx="28" ry="10" fill="#222"/>
               <rect x="-24" y="-2" width="48" height="16" rx="3" fill="#222"/>
@@ -336,12 +353,12 @@
         </g>
       </svg>
 
-      <!-- Mensaje bonito dentro de la escena (aparece al aceptar) -->
-      <div class="nice" id="niceMsg">Gracias por decir que sí, Tomasita. 🌷</div>
+      <!-- Mensaje bonito dentro de la escena -->
+      <div class="nice ui-msg" id="niceMsg">Gracias por decir que sí, Tomasita. 🌷</div>
 
       <!-- Globo y CTA -->
-      <div class="bubble" id="bubble">Orlis te invita a ser su Valentine date 💌</div>
-      <button class="cta" id="acceptBtn" aria-label="Aceptar invitación">Aceptar 💖</button>
+      <div class="bubble ui-top" id="bubble">Orlis te invita a ser su Valentine date 💌</div>
+      <button class="cta ui-top" id="acceptBtn" aria-label="Aceptar invitación">Aceptar 💖</button>
     </div>
 
     <div class="final" id="finalMsg">Te espero el 14 para un día de novios ✨</div>
@@ -349,7 +366,7 @@
   </div>
 
   <script>
-    // Textos
+    // Textos (puedes cambiar estos strings)
     const CONFIG = {
       quote: 'Para mi Tomasita',
       inviteText: 'Orlis te invita a ser su Valentine date 💌',
@@ -363,17 +380,10 @@
     niceMsg.textContent   = CONFIG.niceText;
     finalMsg.textContent  = CONFIG.finalText;
 
-    // Click aceptar: sonríen, bailan en su lugar, florecen tulipanes y aparece mensaje
+    // Aceptar: bailan en su lugar, florecen tulipanes y aparece el mensaje
     acceptBtn.addEventListener('click', () => {
-      document.body.classList.add('accepted','bloom','show-final');
+      document.body.classList.add('accepted');
     });
   </script>
 </body>
 </html>
-      padding:18px 14px 42px;
-    }
-    .wrap{ width:min(980px,96vw); }
-
-    /* Frase */
-    .quote{
-      text-align:center; font-weight:600; line-height:1.35;
